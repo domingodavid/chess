@@ -15,13 +15,13 @@ public class Piece extends JButton{
 	private boolean color; 
 	private static int num = 0;
 
-	public Piece() {
+	public Piece(boolean color) {
 		//this.setBorderPainted(false);
 		this.setFocusPainted(false);
  		setOpaque(true);
 		ImageIcon icon = new ImageIcon(num%2 ==1 ? "imgs/w_pawn.png" : "imgs/b_rook.png");
 
-		setBackground(num++%2==0 ? Color.white : Color.black);
+		setBackground( color ? Color.white : Color.black);
 
 		Image img = ((ImageIcon) icon).getImage() ; 
 		Image newimg = img.getScaledInstance( 30, 70,  java.awt.Image.SCALE_SMOOTH) ;
