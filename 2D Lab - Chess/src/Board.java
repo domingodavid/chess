@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -21,6 +22,8 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -29,6 +32,7 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 	private Piece[][] board;
 	private boolean firstClick = false;
 	private Piece firstClickPiece = null;
+	
 	JFrame frame;
 
 	/* Initialize the 8x8 board with pieces
@@ -68,12 +72,25 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 		}
 
 		GridLayout g = new GridLayout(9,8);
-		frame.setLayout(g);		frame.add(this);
+		frame.setLayout(g);		
+		frame.add(this);
+		JMenu menu, submenu;
+
+//		/https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html
+		JMenuBar menuBar = new JMenuBar();
+		//Build the first menu.
+		menu = new JMenu("New Game");
+		menu.setMnemonic(KeyEvent.VK_A);
+		menu.getAccessibleContext().setAccessibleDescription(
+		        "The only menu in this program that has menu items");
+		menuBar.add(menu);
+		frame.setJMenuBar(menuBar);
 
 		frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
 		Timer t = new Timer(16, this);
 		t.start();
+ 
 		frame.setVisible(true);		
 	}
 	

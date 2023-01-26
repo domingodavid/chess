@@ -14,14 +14,17 @@ public class Piece extends JButton{
 	private int col;
 	private boolean color; 
 	private static int num = 0;
+	private ImageIcon icon;
+	private Color black =  Color.decode("#62cbe7");
+	private Color white = Color.decode("#104373");
 
 	public Piece(boolean color) {
 		//this.setBorderPainted(false);
 		this.setFocusPainted(false);
  		setOpaque(true);
-		ImageIcon icon = new ImageIcon(num%2 ==1 ? "imgs/w_pawn.png" : "imgs/b_rook.png");
+		icon = new ImageIcon(num%2 ==1 ? "imgs/w_pawn.png" : "imgs/b_rook.png");
 
-		setBackground( color ? Color.white : Color.black);
+		setBackground( color ? black : white);
 
 		Image img = ((ImageIcon) icon).getImage() ; 
 		Image newimg = img.getScaledInstance( 30, 70,  java.awt.Image.SCALE_SMOOTH) ;
