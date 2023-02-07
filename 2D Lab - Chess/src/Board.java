@@ -57,7 +57,8 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 				board[i][j] = new Piece((i+j)%2==0);
 				board[i][j].addMouseListener(this);
 			}
-		}		
+		}	
+		
 		setup();
 		
 	}

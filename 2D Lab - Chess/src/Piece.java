@@ -76,7 +76,8 @@ public class Piece extends JButton{
 	}
 
 	public Piece(String fileName, boolean color) {
-
+		this(fileName);
+		this.color = color;
 	}
 
 	/*
