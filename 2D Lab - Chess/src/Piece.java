@@ -1,9 +1,5 @@
 import java.awt.Color;
 import java.awt.Image;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -15,23 +11,31 @@ public class Piece extends JButton{
 	private boolean color; 
 	private static int num = 0;
 	private ImageIcon icon;
+	
+	//color for white and black is a differed hue
 	private Color black =  Color.decode("#62cbe7");
 	private Color white = Color.decode("#104373");
 
-	public Piece(boolean color) {
-		//this.setBorderPainted(false);
-		this.setFocusPainted(false);
- 		setOpaque(true);
-		icon = new ImageIcon(num%2 ==1 ? "imgs/w_pawn.png" : "imgs/b_rook.png");
-
-		setBackground( color ? black : white);
-
-		Image img = ((ImageIcon) icon).getImage() ; 
-		Image newimg = img.getScaledInstance( 30, 70,  java.awt.Image.SCALE_SMOOTH) ;
+	public Piece(boolean color, int row, int col) {
+	    this.setFocusPainted(false);
+	    this.setOpaque(true); // Ensure the background is painted
+	    num++;	   
+		this.color = color;
+		this.row = row;
+		this.col = col;
+		 setStyle("");
 		
+	}
+	
+	public void setStyle(String imgFile) {
+	    //Icon setup
+		icon = new ImageIcon(num%2 ==1 ? "imgs/w_pawn.png" : "imgs/b_rook.png");
+		Image img = ((ImageIcon) icon).getImage() ; 
+		Image newimg = img.getScaledInstance( 30, 70,  java.awt.Image.SCALE_FAST) ;
 		icon = new ImageIcon( newimg );
 		setIcon(icon);
-		
+		setBackground( color ? black : white);
+		this.setBorderPainted(false);
 	}
 	
 	public Piece(String fileName) {
@@ -46,9 +50,7 @@ public class Piece extends JButton{
 		
 		icon = new ImageIcon( newimg );
 		setIcon(icon);
-	}
-	
-	
+	}	
 	
 
 	public int getRow() {

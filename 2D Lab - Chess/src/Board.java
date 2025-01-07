@@ -1,10 +1,8 @@
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -12,12 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
@@ -30,13 +22,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
-import javax.swing.Timer;
 
 public class Board extends JPanel implements MouseListener, ActionListener{
 	
-	private Piece[][] board;
 	private boolean firstClick = false;
 	private Piece firstClickPiece = null;
+	private ChessLogic chessLogic = new ChessLogic();
 	
 	JFrame frame;
 
@@ -50,36 +41,48 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 	 */
 	public Board() {
 		frame = new JFrame("Chess");
-		board = new Piece[8][8];
-		
-		for(int i =0; i < board.length;i++) {
-			for(int j = 0; j < board[0].length;j++) {
-				board[i][j] = new Piece((i+j)%2==0);
-				board[i][j].addMouseListener(this);
-			}
-		}	
-		
+//		board = new Piece[8][8];	
 		setup();
 		
 	}
 
 	public void setup() {
 		frame.setSize(800, 800);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
+
 		
+
+		setupBoard();
+		addMenus();
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);		
+		frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+ 
+		frame.setVisible(true);		
+	}
+	
+	public void setupBoard() {
 		JPanel jp = new JPanel();
 
-		
+		GridLayout g = new GridLayout(8,8);
+		jp.setLayout(g);	
+
+
+		Tile[][] board = chessLogic.getBoard();
 		for(int i =0; i < board.length;i++) {
 			for(int j = 0; j < board[0].length;j++) {
-				frame.add(board[i][j]);
+				jp.add(board[i][j]);
+				board[i][j].addMouseListener(this);
 			}
 		}
-
-		GridLayout g = new GridLayout(9,8);
-		frame.setLayout(g);		
-		frame.add(this);
+		
+		
+		frame.add(jp);
+	}
+	
+	
+	public void addMenus() {
 		//Where the GUI is created:
 		JMenuBar menuBar;
 		JMenu menu, submenu;
@@ -91,7 +94,7 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 		menuBar = new JMenuBar();
 
 		//Build the first menu.
-		menu = new JMenu("A Menu");
+		menu = new JMenu("Menu");
 		menu.setMnemonic(KeyEvent.VK_A);
 		menu.getAccessibleContext().setAccessibleDescription(
 		        "The only menu in this program that has menu items");
@@ -161,18 +164,10 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 		menuBar.add(menu);
 		frame.setJMenuBar(menuBar);
 
-		frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR));
-		
-		Timer t = new Timer(16, this);
-		t.start();
- 
-		frame.setVisible(true);		
 	}
 	
-	/* Swap the location of the two pieces, a and b, in the board*/
-	public void swap(Piece a, Piece b) {
-		
-	}
+	
+
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -183,37 +178,34 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
- 		// TODO Auto-generated method stub
-		if(!firstClick) {
+		// TODO Auto-generated method stub
+		if (!firstClick) {
 			firstClickPiece = (Piece) e.getComponent();
 			firstClickPiece.setBorder(BorderFactory.createLineBorder(Color.green));
-		}else {
+			firstClickPiece.setBorderPainted(true);
+			
+			Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+					((ImageIcon) ((Piece) e.getComponent()).getIcon()).getImage(), new Point(0, 0), "blank cursor");
+			frame.getContentPane().setCursor(blankCursor);
+
+		} else {
 			System.out.println("swap");
-			
 			Piece curr = (Piece) e.getComponent();
-			
-			firstClickPiece.setIcon(null);
-			
+			curr.setBorder(BorderFactory.createLineBorder(Color.green));
 			Icon currIcon = curr.getIcon();
 			Icon firstIcon = firstClickPiece.getIcon();
 			curr.setIcon(firstIcon);
 			firstClickPiece.setIcon(currIcon);
+			firstClickPiece.setBorderPainted(false);
+			frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR));
+
 			
-		}
+ 		}
+
 		firstClick = !firstClick;
+
 		
-			 if(((ImageIcon) ((Piece) e.getComponent()).getIcon()!=null)){
-			Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-					((ImageIcon) ((Piece)e.getComponent()).getIcon()).getImage(), new Point(0, 0), "blank cursor");
-				frame.getContentPane().setCursor(blankCursor);
-			 }else{
-				 
-				   frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR));    
-			 }
-		
-	}
-	
-	
+	}	
 	
 	public void paint(Graphics g) {
 		System.out.println("paint");
