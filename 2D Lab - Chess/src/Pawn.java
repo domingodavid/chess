@@ -40,9 +40,10 @@ public class Pawn extends Piece{
 			if(this.row+1<8) {
 				result[row+1][this.col] = true;
 			}
-			if(this.row+2<8) {
-				result[row+2][this.col] = true;
-			}
+			//what about row+2? 
+			//when can it move row+2?
+			//what properties from the super class can be set for a pawn to help?
+			
 		}
 		
 		
