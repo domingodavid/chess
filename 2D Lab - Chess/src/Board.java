@@ -11,8 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -26,10 +24,14 @@ import javax.swing.KeyStroke;
 public class Board extends JPanel implements MouseListener, ActionListener{
 	
 	private boolean firstClick = false;
-	private Piece firstClickPiece = null;
+	private Tile firstClickPiece = null;
 	private ChessLogic chessLogic = new ChessLogic();
 	
 	JFrame frame;
+	
+	//size of the frame
+	private int width 	= 800;
+	private int height 	= 800;
 
 	/* Initialize the 8x8 board with pieces
 	 * The top 2 rows should have the black pieces
@@ -41,25 +43,26 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 	 */
 	public Board() {
 		frame = new JFrame("Chess");
-//		board = new Piece[8][8];	
 		setup();
 		
 	}
 
 	public void setup() {
-		frame.setSize(800, 800);
-
 		
-
+		
+		frame.setSize(width, height);
 		setupBoard();
 		addMenus();
 		
+		//add action for x button for a JFrame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		frame.setResizable(false);		
-		frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR));
-
- 
-		frame.setVisible(true);		
+		frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+		
+		//show the frame
+		frame.setVisible(true);	
+		
 	}
 	
 	public void setupBoard() {
@@ -77,97 +80,8 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 			}
 		}
 		
-		
 		frame.add(jp);
 	}
-	
-	
-	public void addMenus() {
-		//Where the GUI is created:
-		JMenuBar menuBar;
-		JMenu menu, submenu;
-		JMenuItem menuItem;
-		JRadioButtonMenuItem rbMenuItem;
-		JCheckBoxMenuItem cbMenuItem;
-
-		//Create the menu bar.
-		menuBar = new JMenuBar();
-
-		//Build the first menu.
-		menu = new JMenu("Menu");
-		menu.setMnemonic(KeyEvent.VK_A);
-		menu.getAccessibleContext().setAccessibleDescription(
-		        "The only menu in this program that has menu items");
-		menuBar.add(menu);
-
-		//a group of JMenuItems
-		menuItem = new JMenuItem("A text-only menu item",
-		                         KeyEvent.VK_T);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-		        KeyEvent.VK_1, ActionEvent.ALT_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-		        "This doesn't really do anything");
-		menu.add(menuItem);
-
-		menuItem = new JMenuItem("Both text and icon",
-		                         new ImageIcon("images/middle.gif"));
-		menuItem.setMnemonic(KeyEvent.VK_B);
-		menu.add(menuItem);
-
-		menuItem = new JMenuItem(new ImageIcon("images/middle.gif"));
-		menuItem.setMnemonic(KeyEvent.VK_D);
-		menu.add(menuItem);
-
-		//a group of radio button menu items
-		menu.addSeparator();
-		ButtonGroup group = new ButtonGroup();
-		rbMenuItem = new JRadioButtonMenuItem("A radio button menu item");
-		rbMenuItem.setSelected(true);
-		rbMenuItem.setMnemonic(KeyEvent.VK_R);
-		group.add(rbMenuItem);
-		menu.add(rbMenuItem);
-
-		rbMenuItem = new JRadioButtonMenuItem("Another one");
-		rbMenuItem.setMnemonic(KeyEvent.VK_O);
-		group.add(rbMenuItem);
-		menu.add(rbMenuItem);
-
-		//a group of check box menu items
-		menu.addSeparator();
-		cbMenuItem = new JCheckBoxMenuItem("A check box menu item");
-		cbMenuItem.setMnemonic(KeyEvent.VK_C);
-		menu.add(cbMenuItem);
-
-		cbMenuItem = new JCheckBoxMenuItem("Another one");
-		cbMenuItem.setMnemonic(KeyEvent.VK_H);
-		menu.add(cbMenuItem);
-
-		//a submenu
-		menu.addSeparator();
-		submenu = new JMenu("A submenu");
-		submenu.setMnemonic(KeyEvent.VK_S);
-
-		menuItem = new JMenuItem("An item in the submenu");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-		        KeyEvent.VK_2, ActionEvent.ALT_MASK));
-		submenu.add(menuItem);
-
-		menuItem = new JMenuItem("Another item");
-		submenu.add(menuItem);
-		menu.add(submenu);
-
-		//Build second menu in the menu bar.
-		menu = new JMenu("Another Menu");
-		menu.setMnemonic(KeyEvent.VK_N);
-		menu.getAccessibleContext().setAccessibleDescription(
-		        "This menu does nothing");
-		menuBar.add(menu);
-		frame.setJMenuBar(menuBar);
-
-	}
-	
-	
-
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -178,34 +92,90 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		if (!firstClick) {
-			firstClickPiece = (Piece) e.getComponent();
-			firstClickPiece.setBorder(BorderFactory.createLineBorder(Color.green));
-			firstClickPiece.setBorderPainted(true);
-			
-			Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-					((ImageIcon) ((Piece) e.getComponent()).getIcon()).getImage(), new Point(0, 0), "blank cursor");
-			frame.getContentPane().setCursor(blankCursor);
-
-		} else {
-			System.out.println("swap");
-			Piece curr = (Piece) e.getComponent();
-			curr.setBorder(BorderFactory.createLineBorder(Color.green));
-			Icon currIcon = curr.getIcon();
-			Icon firstIcon = firstClickPiece.getIcon();
-			curr.setIcon(firstIcon);
-			firstClickPiece.setIcon(currIcon);
-			firstClickPiece.setBorderPainted(false);
-			frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-			
- 		}
-
 		firstClick = !firstClick;
 
+
+		if (firstClick) {
+			//empty tile
+			firstClickPiece = (Tile) e.getComponent();
+			if(firstClickPiece.getPiece() == null) return;
+			
+			System.out.println(firstClickPiece.getPiece().getClass());
+			firstClickPiece.setBorder(BorderFactory.createLineBorder(Color.green,2));
+			
+			firstClickPiece.setBorderPainted(true);
+			Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+					((ImageIcon) ((Tile) e.getComponent()).getIcon()).getImage(), new Point(0, 0), "blank cursor");
+			frame.getContentPane().setCursor(blankCursor);
+			
+			boolean[][] validMoves = firstClickPiece.getPiece().moves();
+			highlightAllMoves(validMoves);
+			
+		} else {
+ 			Tile curr = (Tile) e.getComponent(); 			
+			if(firstClickPiece.getPiece()!=null && firstClickPiece.getPiece().validMove(firstClickPiece, curr)){
+				System.out.println("Placing");
+				swap(firstClickPiece, curr, firstClickPiece.getPiece().capture(curr));
+			}
+			firstClickPiece.setBorderPainted(false);
+			frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR));
+			resetHighlights();
+ 		}
+		
+ 		 
 		
 	}	
+	
+	public void highlightAllMoves(boolean[][] moves) {
+		System.out.println("highlight possible moves");
+		
+		if(moves == null){
+			System.out.println("moves was null for the piece");
+			return;
+		}
+
+		Tile[][] board = chessLogic.getBoard();
+		for(int r = 0; r < moves.length; r++) {
+			for(int c = 0; c < moves[r].length; c++) {
+				if(moves[r][c]){
+					board[r][c].setBorder(BorderFactory.createLineBorder(Color.green,2));
+					board[r][c].setBorderPainted(true);
+				}
+			}
+		}
+	}
+	
+	public void resetHighlights() {
+		System.out.println("reset highlights for possible moves");
+		Tile[][] board = chessLogic.getBoard();
+		for(int r = 0; r < board.length; r++) {
+			for(int c = 0; c < board[r].length; c++) {
+				board[r][c].setBorderPainted(false);
+			}
+		}
+	}
+	
+	/* swap objects a and b in board. Be sure to swap icons as well an update locations */
+	public void swap(Tile a, Tile b, boolean capture) {
+		
+		Piece temp = a.getPiece();
+		
+		if(!capture)
+			a.setPiece(b.getPiece());
+		else
+			a.setPiece(null);
+		
+		b.setPiece(temp);
+
+
+	}
+	
+	
+	
+	public void reset() {
+		 frame.dispose(); // Close the current JFrame
+		 new Board();
+	}
 	
 	public void paint(Graphics g) {
 		System.out.println("paint");
@@ -235,5 +205,50 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 		repaint();
  	}
 
+	
+	public void addMenus() {
+		//Where the GUI is created:
+		JMenuBar menuBar;
+		JMenu menu, submenu;
+		JMenuItem menuItem;
+		JRadioButtonMenuItem rbMenuItem;
+		JCheckBoxMenuItem cbMenuItem;
+
+		//Create the menu bar.
+		menuBar = new JMenuBar();
+
+		//Build the first menu.
+		menu = new JMenu("Menu");
+		menu.setMnemonic(KeyEvent.VK_A);
+		menu.getAccessibleContext().setAccessibleDescription(
+		        "The only menu in this program that has menu items");
+		menuBar.add(menu);
+
+		//a group of JMenuItems
+		menuItem = new JMenuItem("New Game");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(
+		        KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription(
+		        "Reset the game back to new game");
+		menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle the click event for New Game
+               reset();
+            }
+        });
+		menu.add(menuItem);
+
+		menuItem = new JMenuItem("Undo",
+		                         new ImageIcon("images/middle.gif"));
+		menuItem.setMnemonic(KeyEvent.VK_B);
+		menu.add(menuItem);
+
+		menuItem = new JMenuItem(new ImageIcon("images/middle.gif"));
+		menuItem.setMnemonic(KeyEvent.VK_D);
+		menu.add(menuItem);
+		frame.setJMenuBar(menuBar);
+	}
+	
 
 }

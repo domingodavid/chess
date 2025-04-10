@@ -1,14 +1,14 @@
 
-public class Queen extends Piece{
+public class Rook extends Piece{
 	
-	public Queen(String fileName, COLOR color, int row, int col, Tile[][] board) 
+	public Rook(String fileName, COLOR color, int row, int col, Tile[][] board) 
 	{
-		super(fileName.contains("b_") ? "b_queen.png" : "w_queen.png", color, row, col, board);	
+		super(fileName.contains("b_") ? "b_rook.png" : "w_rook.png", color, row, col, board);	
 	}
+	
 
-
-	/*
-     * Determines if a pawn can move from the "from" tile to the "to" tile.
+	  /*
+     * Determines if a Rook can move from the "from" tile to the "to" tile.
      * 
      * This method will return true if the pawn can legally move based on the rules of chess 
      * (e.g., moving one square forward, or two squares forward from its starting position,
@@ -29,7 +29,7 @@ public class Queen extends Piece{
 	 * Return a 2D array of booleans indicating where on the board a particular
 	 * piece can go
 	 */
-	public boolean[][] moves(Tile[][] board) {
+	public boolean[][] moves() {
 		
 		//You must use the validMove helper method here
 		return null;

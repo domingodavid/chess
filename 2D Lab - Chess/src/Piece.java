@@ -1,56 +1,115 @@
+//import java.awt.Color;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-public class Piece extends JButton{
+public abstract class Piece {
 
 	// position of a Piece in the 8x8 board
-	private int row;
-	private int col;
-	private boolean color; 
-	private static int num = 0;
-	private ImageIcon icon;
+	protected int row;
+	protected int col;
 	
-	//color for white and black is a differed hue
-	private Color black =  Color.decode("#62cbe7");
-	private Color white = Color.decode("#104373");
+	protected COLOR color; 
+	protected static int num = 0;		//what might this be useful for?!
+	protected ImageIcon icon;
+	
+	protected Tile[][] board;			//Piece has a reference to the board
 
-	public Piece(boolean color, int row, int col) {
-	    this.setFocusPainted(false);
-	    this.setOpaque(true); // Ensure the background is painted
-	    num++;	   
-		this.color = color;
+	public Piece(String fileName, COLOR color, int row, int col, Tile[][] board) {
+
+ 		this.color = color;
 		this.row = row;
 		this.col = col;
-		 setStyle("");
+		setIcon(fileName);
+		this.board = board;
 		
 	}
 	
-	public void setStyle(String imgFile) {
+	public void setIcon(String fileName) {
 	    //Icon setup
-		icon = new ImageIcon(num%2 ==1 ? "imgs/w_pawn.png" : "imgs/b_rook.png");
+		icon = new ImageIcon("imgs/"+fileName);
 		Image img = ((ImageIcon) icon).getImage() ; 
-		Image newimg = img.getScaledInstance( 30, 70,  java.awt.Image.SCALE_FAST) ;
-		icon = new ImageIcon( newimg );
-		setIcon(icon);
-		setBackground( color ? black : white);
-		this.setBorderPainted(false);
+		Image newimg = img.getScaledInstance( 100, 100,  java.awt.Image.SCALE_FAST) ;
+		icon = new ImageIcon( img );
+		
 	}
 	
-	public Piece(String fileName) {
-		this.setFocusPainted(false);
- 		setOpaque(true);
-		ImageIcon icon = new ImageIcon("imgs"+fileName);
 
-		setBackground(num++%2==0 ? Color.white : Color.black);
+	 private static ImageIcon createScaledIcon(Image img, int width, int height) {
+	        // Create a blank BufferedImage with desired dimensions
+	        BufferedImage centeredImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+	        Graphics2D g2d = centeredImage.createGraphics();
 
-		Image img = ((ImageIcon) icon).getImage() ; 
-		Image newimg = img.getScaledInstance( 30, 70,  java.awt.Image.SCALE_SMOOTH) ;
-		
-		icon = new ImageIcon( newimg );
-		setIcon(icon);
-	}	
+	        // Scale the image proportionally
+	        int scaledWidth = width;
+	        int scaledHeight = height;
+
+	        int originalWidth = img.getWidth(null);
+	        int originalHeight = img.getHeight(null);
+
+	        if (originalWidth > 0 && originalHeight > 0) {
+	            double aspectRatio = (double) originalWidth / originalHeight;
+
+	            if (width / aspectRatio <= height) {
+	                scaledHeight = (int) (width / aspectRatio);
+	            } else {
+	                scaledWidth = (int) (height * aspectRatio);
+	            }
+	        }
+
+	        // Calculate the top-left corner for centering
+	        int x = (width - scaledWidth) / 2;
+	        int y = (height - scaledHeight) / 2;
+
+	        // Draw the scaled image onto the BufferedImage
+	        g2d.setColor(new Color(0, 0, 0, 0)); // Transparent background
+	        g2d.fillRect(0, 0, width, height);  // Clear the canvas
+	        g2d.drawImage(img.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH), x, y, null);
+	        g2d.dispose();
+
+	        // Return the new image as an ImageIcon
+	        return new ImageIcon(centeredImage);
+	    }
+
+ 
+
+	/*
+	 * Return a 2D array of booleans indicating where on the board a particular
+	 * piece can go
+	 */
+	public abstract boolean[][] moves(); 
+	
+	/**
+	 * A chess piece needs to know if it is making a valid move from it's current tile location
+	 * to a new tile location. 
+	 * @param from originating tile of the chess piece
+	 * @param to destination tile of the chess piece
+	 * @return true if valid to move to the new location donated by to
+	 */
+	public abstract boolean validMove(Tile from, Tile to);
+
+	/**
+	 * Returns true if moving to the tile means you are capturing the piece
+	 * @param curr the tile the piece is moving to
+	 * @return true if a capture, false otherwise
+	 */
+	protected abstract boolean capture(Tile curr);
+
+	
+	public void setLocation(int row, int col) {
+		this.row = row;
+		this.col = col;		
+	}
+
+	public Icon getIcon() {
+		return icon;
+	}
+
 	
 
 	public int getRow() {
@@ -69,25 +128,11 @@ public class Piece extends JButton{
 		this.col = col;
 	}
 
-	public boolean isColor() {
+	public COLOR getColor() {
 		return color;
 	}
 
-	public void setColor(boolean color) {
+	public void setColor(COLOR color) {
 		this.color = color;
 	}
-
-	public Piece(String fileName, boolean color) {
-		this(fileName);
-		this.color = color;
-	}
-
-	/*
-	 * Return a 2D array of booleans indicating where on the board a particular
-	 * piece can go
-	 */
-	public boolean[][] moves(Piece[][] board) {
-		return new boolean[][] {};
-	}
-
 }

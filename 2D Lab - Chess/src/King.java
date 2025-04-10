@@ -1,13 +1,13 @@
 
-public class Queen extends Piece{
+public class King extends Piece{
 	
-	public Queen(String fileName, COLOR color, int row, int col, Tile[][] board) 
+	public King(String fileName, COLOR color, int row, int col, Tile[][] board) 
 	{
-		super(fileName.contains("b_") ? "b_queen.png" : "w_queen.png", color, row, col, board);	
+		super(fileName.contains("b_") ? "b_king.png" : "w_king.png", color, row, col, board);	
 	}
+	
 
-
-	/*
+	  /*
      * Determines if a pawn can move from the "from" tile to the "to" tile.
      * 
      * This method will return true if the pawn can legally move based on the rules of chess 
