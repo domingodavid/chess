@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
@@ -56,7 +57,7 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 		
 		//add action for x button for a JFrame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		frame.setUndecorated(true);
 		frame.setResizable(false);		
 		frame.getContentPane().setCursor(new Cursor(Cursor.HAND_CURSOR)); 
 		
@@ -226,12 +227,10 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 
 		//a group of JMenuItems
 		menuItem = new JMenuItem("New Game");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-		        KeyEvent.VK_1, ActionEvent.ALT_MASK));
+ 
 		menuItem.getAccessibleContext().setAccessibleDescription(
 		        "Reset the game back to new game");
 		menuItem.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 // Handle the click event for New Game
                reset();
@@ -244,11 +243,50 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 		menuItem.setMnemonic(KeyEvent.VK_B);
 		menu.add(menuItem);
 
-		menuItem = new JMenuItem(new ImageIcon("images/middle.gif"));
-		menuItem.setMnemonic(KeyEvent.VK_D);
-		menu.add(menuItem);
+		menuItem = new JMenuItem("Quit", new ImageIcon("images/middle.gif"));
+		menuItem.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Define an array of custom options for the dialog
+		        Object[] options = { "Yes", "Cancel" };
+
+		        // Display an option dialog with custom options
+		        // The user's choice is stored in the 'choice'
+		        // variable
+		        int choice = JOptionPane.showOptionDialog(
+		            null, // Parent component (null means center on screen)
+		            "Do you want to proceed?", // Message to display
+		            "Quit the Game", // Dialog title
+		            JOptionPane.YES_NO_CANCEL_OPTION, // Option type (Yes, No, Cancel)
+		            JOptionPane.QUESTION_MESSAGE, // Message type (question icon)
+		            null, // Custom icon (null means no custom icon)
+		            options, // Custom options array
+		            options[1] // Initial selection (default is "Cancel")
+		        );
+
+		        // Check the user's choice and display a
+		        // corresponding message
+		        if (choice == JOptionPane.YES_OPTION) {
+		            // If the user chose 'Yes'
+		            // show a message indicating that they are
+		            // proceeding
+ 		            System.exit(0);
+		        }
+		        else {
+		            // If the user chose 'Cancel' or closed the
+		            // dialog
+		            // show a message indicating the operation is
+		            // canceled
+		            JOptionPane.showMessageDialog(null, "Operation canceled.");
+		        }
+			}	
+		});
+ 		menu.add(menuItem);
 		frame.setJMenuBar(menuBar);
 	}
 	
+	public static void main(String[] args) {
+		// Create an instance of the board
+		new Board();
 
+	}
 }

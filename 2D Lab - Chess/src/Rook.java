@@ -35,4 +35,11 @@ public class Rook extends Piece{
 		return null;
 		
 	}
+
+
+	@Override
+	protected boolean capture(Tile curr) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

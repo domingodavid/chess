@@ -35,4 +35,18 @@ public class Bishop extends Piece{
 		return null;
 		
 	}
+
+
+	@Override
+	public boolean[][] moves() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	protected boolean capture(Tile curr) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
