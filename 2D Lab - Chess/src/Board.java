@@ -26,7 +26,7 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 	
 	private boolean firstClick = false;
 	private Tile firstClickPiece = null;
-	private ChessLogic chessLogic = new ChessLogic();
+	private ChessLogic chessLogic;
 	
 	JFrame frame;
 	
@@ -43,7 +43,8 @@ public class Board extends JPanel implements MouseListener, ActionListener{
 	 * 
 	 */
 	public Board() {
-		frame = new JFrame("Chess");
+		frame 		= new JFrame("Chess");
+		chessLogic 	= new ChessLogic();
 		setup();
 		
 	}
